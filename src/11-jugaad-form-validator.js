@@ -63,4 +63,55 @@
  */
 export function validateForm(formData) {
   // Your code here
+  const errors = {};
+  if (typeof formData !== 'object' || formData === null) {
+    return { isValid: false, errors: { formData: "Invalid form data" } };
+  }
+  const { name, email, phone, age, pincode, state, agreeTerms } = formData;
+
+  // Name validation
+  if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 50) {
+    errors.name = "Name must be 2-50 characters";
+  }
+  // Email validation
+  if (typeof email !== 'string' || email.indexOf('@') === -1 || email.indexOf('@') !== email.lastIndexOf('@') || email.indexOf('.') <= email.indexOf('@')) {
+    errors.email = "Invalid email format";
+  }
+  // Phone validation
+  if (typeof phone !== 'string' || phone.length !== 10 || !/^[6-9]/.test(phone) || !/^\d{10}$/.test(phone)) {
+    errors.phone = "Invalid Indian phone number";
+  }
+  // Age validation
+// Age validation
+let ageNum = age;
+
+if (typeof age === "string") {
+  ageNum = parseInt(age);
+}
+
+if (
+  typeof ageNum !== "number" ||
+  isNaN(ageNum) ||
+  !Number.isInteger(ageNum) ||
+  ageNum < 16 ||
+  ageNum > 100
+) {
+  errors.age = "Age must be an integer between 16 and 100";
+}
+
+  // Pincode validation
+  if (typeof pincode !== 'string' || pincode.length !== 6 || pincode.startsWith('0') || !/^\d{6}$/.test(pincode)) {
+    errors.pincode = "Invalid Indian pincode";
+  }
+  // State validation
+  const stateValue = state ?? "";
+  if (typeof stateValue !== 'string' || stateValue.trim() === '') {
+    errors.state = "State is required";
+  }
+  // Agree terms validation
+  if (!Boolean(agreeTerms)) {
+    errors.agreeTerms = "Must agree to terms";
+  }
+  return { isValid: Object.keys(errors).length === 0, errors };
+
 }
